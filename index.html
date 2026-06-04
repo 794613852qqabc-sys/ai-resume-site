@@ -145,57 +145,23 @@ function App() {
     return () => { if (document.head.contains(style)) document.head.removeChild(style); };
   }, []);
 
-  // ================= 万能大模型引擎 (强悍适配一切 OpenAI 标准协议) =================
+  // ================= 后端 API 中转调用 =================
+  const BACKEND_URL = 'https://bool-radical-disk-stick.trycloudflare.com/api/chat';
   const callAI = async (prompt, expectJson = false) => {
     for (let i = 0; i < 3; i++) {
       try {
-        if (!apiConfig.apiKey) {
-          throw new Error('API Key 未配置，请前往【⚙️设置面板】填写您的密钥');
-        }
-
-        const url = `${apiConfig.baseUrl.replace(/\/$/, '')}/chat/completions`;
-        const payload = {
-          model: apiConfig.modelName || 'Qwen/Qwen2.5-7B-Instruct',
-          messages: [
-            { role: 'system', content: '你是一个资深大厂HR专家和职业规划师。' + (expectJson ? '【极其重要警告】你必须且只能返回一个完整的 JSON Object，绝对不能直接返回 Array 或带有 markdown 标记的代码块，键名必须严格一致！' : '') },
-            { role: 'user', content: prompt }
-          ]
-        };
-
-        if (expectJson && (apiConfig.modelName.includes('gpt') || apiConfig.modelName.includes('deepseek'))) {
-          payload.response_format = { type: "json_object" };
-        }
-
-        const res = await fetch(url, {
+        const res = await fetch(BACKEND_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiConfig.apiKey}`
-          },
-          body: JSON.stringify(payload)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, expectJson })
         });
-
-        if (!res.ok) throw new Error(`API 请求失败: ${await res.text()}`);
         const data = await res.json();
-        let text = data.choices?.[0]?.message?.content || '';
-
-        // 强悍的 JSON 正则提取器，剥离一切废话
-        if (expectJson) {
-          const match = text.match(/({|\[)[\s\S]*(}|\])/);
-          if (match) {
-            text = match[0];
-            const parsed = JSON.parse(text);
-            return Array.isArray(parsed) ? parsed[0] : parsed;
-          } else {
-            throw new Error('无法从大模型结果中解析出 JSON');
-          }
-        }
-        return text;
-
+        if (!data.success) throw new Error(data.error || '后端请求失败');
+        return data.data;
       } catch (err) {
         console.error('AI Error:', err);
         if (i === 2) { 
-          alert(err.message || '大模型请求失败，请检查 API 密钥、接口地址及模型名称是否正确');
+          alert(err.message || '大模型请求失败，请检查网络连接'); 
           if(expectJson) return null; 
           throw err; 
         }
@@ -203,7 +169,6 @@ function App() {
       }
     }
   };
-
   // ================= 状态更新辅助 =================
   const updateList = (setList, id, field, value) => setList(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
   const handleAddItem = (type) => {
