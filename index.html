@@ -31,61 +31,28 @@
   </script>
 </head>
 <body>
-  <div id="root">
-    <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#666;">
-      <p>加载中，请稍候...</p>
-    </div>
-  </div>
+  <div id="root"></div>
   <script type="text/babel" data-presets="react">
-
 
 // ================= 全局 UI 辅助组件 =================
 const InputGroup = ({ label, value, onChange, grid = false, type = 'text', placeholder, readOnly = false }) => (
   <div className={`mb-3 ${grid ? '' : 'w-full'}`}>
-    <label className="block text-[12px] font-semibold text-gray-600 mb-1">{label}</label>
+    <label className="block text-[12px] font-bold text-gray-500 mb-1">{label}</label>
     <input type={type} value={value} onChange={onChange} placeholder={placeholder} readOnly={readOnly}
-      className={`w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-100 focus:border-teal-500 outline-none transition-all ${readOnly ? 'opacity-70 cursor-not-allowed' : 'focus:bg-white'}`} />
+      className={`w-full px-3 py-2 bg-gray-50/50 border border-gray-200 rounded-lg text-sm text-gray-800 focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all ${readOnly ? 'opacity-70 cursor-not-allowed' : ''}`} />
   </div>
 );
 
 const TextAreaGroup = ({ label, value, onChange, placeholder, rows = 3 }) => (
   <div className="mb-3 w-full">
-    <label className="block text-[12px] font-semibold text-gray-600 mb-1">{label}</label>
-    <textarea rows={rows} value={value} onChange={onChange} placeholder={placeholder} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-teal-100 focus:border-teal-500 outline-none transition-all" />
+    <label className="block text-[12px] font-bold text-gray-500 mb-1">{label}</label>
+    <textarea rows={rows} value={value} onChange={onChange} placeholder={placeholder} 
+      className="w-full px-3 py-2 bg-gray-50/50 border border-gray-200 rounded-lg text-sm text-gray-800 focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all custom-scrollbar" />
   </div>
 );
 
-// 大模型预设库
-const AI_PROVIDERS = [
-  { id: 'siliconflow', name: '硅基流动 (推荐)', baseUrl: 'https://api.siliconflow.cn/v1', defaultModel: 'Qwen/Qwen2.5-7B-Instruct', desc: '免充值，永久免费使用阿里Qwen等顶级开源模型' },
-  { id: 'deepseek', name: 'DeepSeek (深度求索)', baseUrl: 'https://api.deepseek.com', defaultModel: 'deepseek-chat', desc: '国内性价比之王，逻辑能力极强' },
-  { id: 'kimi', name: 'Kimi (月之暗面)', baseUrl: 'https://api.moonshot.cn/v1', defaultModel: 'moonshot-v1-8k', desc: '长文本处理优秀，中文语境极佳' },
-  { id: 'zhipu', name: '智谱清言 (GLM)', baseUrl: 'https://open.bigmodel.cn/api/paas/v4', defaultModel: 'glm-4', desc: '国内一线科研级大模型' },
-  { id: 'aliyun', name: '阿里通义千问', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', defaultModel: 'qwen-plus', desc: '阿里云官方标准接口' },
-  { id: 'custom', name: '⚙️ 万能自定义 (小米/百度/腾讯等)', baseUrl: '', defaultModel: '', desc: '只要兼容 OpenAI 标准协议，填入接口地址即可接入所有模型' }
-];
-
 function App() {
-  // ================= 状态管理：商业付费系统 (Mock) =================
-  const [isVip, setIsVip] = useState(false);
-  const [showPaywall, setShowPaywall] = useState(false);
-
-  // ================= 状态管理：API 与系统设置 (本地持久化) =================
-  const [apiConfig, setApiConfig] = useState(() => {
-    const saved = localStorage.getItem('resume_api_config');
-    return saved ? JSON.parse(saved) : { 
-      provider: 'siliconflow',
-      apiKey: '', 
-      baseUrl: 'https://api.siliconflow.cn/v1', 
-      modelName: 'Qwen/Qwen2.5-7B-Instruct'
-    };
-  });
-
-  useEffect(() => {
-    localStorage.setItem('resume_api_config', JSON.stringify(apiConfig));
-  }, [apiConfig]);
-
-  // ================= 状态管理：简历数据 =================
+  // ================= 状态管理：简历业务数据 =================
   const [basic, setBasic] = useState({ name: '张云帆', gender: '男', age: '25岁', phone: '138-0000-0000', email: 'zhangyunfan@example.com', experience: '3年经验', degree: '本科' });
   const [avatar, setAvatar] = useState(null);
   const [intention, setIntention] = useState({ role: '高级产品经理', city: '北京 / 深圳', status: '随时到岗' });
@@ -93,17 +60,20 @@ function App() {
   const [education, setEducation] = useState([{ id: 1, school: '华南理工大学', major: '计算机科学与技术', degree: '本科', date: '2017.09 - 2021.06' }]);
   const [skills, setSkills] = useState("• 熟练掌握产品规划与设计，能独立完成市场调研、竞品分析及PRD文档撰写。\n• 精通 Axure、Figma、Xmind 等工具。\n• 熟悉敏捷开发流程，具备项目管理能力。\n• 掌握基本的 Python 与 SQL 数据分析。");
   const [experiences, setExperiences] = useState([{ id: 1, company: '星辰科技有限公司', role: '产品经理', date: '2021.07 - 至今', desc: '• 核心主导：作为核心产品经理，主导从0到1孵化千万级社交APP，负责市场调研、需求挖掘及完整产品架构设计。\n• AI赋能：创新性地引入AI智能推荐算法，重构用户匹配链路，上线后使日均活跃用户数(DAU)提升35%，次日留存率提升20%。\n• 敏捷迭代：建立并推进敏捷研发流程，跨部门协同20+人团队，将版本迭代周期缩短至双周，极大提升交付效率。', isOptimizing: false }]);
-  const [projects, setProjects] = useState([{ id: 1, name: 'AI 简历生成器平台', role: '项目负责人', date: '2023.08 - 2023.11', desc: '• 项目统筹：从0到1独立负责「AI简历生成器」的完整生命周期，统筹需求分析、原型设计及技术选型。\n• 体验优化：创新性引入大模型API实现一键STAR法则润色，产品上线首月即获取数万名自然流量用户。\n• 商业变现：设计“基础免费+高阶付费”商业闭环，上线次周即实现规模化营收。', isOptimizing: false }]);
+  const [projects, setProjects] = useState([{ id: 1, name: 'OfferGo 简历大模型', role: '项目负责人', date: '2023.08 - 2023.11', desc: '• 项目统筹：从0到1独立负责「OfferGo简历」的完整生命周期，统筹需求分析、原型设计及技术选型。\n• 体验优化：创新性引入大模型API实现一键STAR法则润色，产品上线首月即获取数万名自然流量用户。\n• 商业变现：设计“基础免费+广告植入”商业闭环，上线次周即实现规模化营收。', isOptimizing: false }]);
 
-  // ================= 状态管理：JD 匹配 =================
+  // ================= 状态管理：JD 匹配 & VIP权限 =================
   const [jdText, setJdText] = useState('');
   const [matchReport, setMatchReport] = useState(null);
   const [isMatching, setIsMatching] = useState(false);
+  
+  const [isVip, setIsVip] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   // ================= 状态管理：UI与渲染引擎 =================
-  const [activeTab, setActiveTab] = useState('settings'); // 默认展示设置面板供测试
+  const [activeTab, setActiveTab] = useState('content');
   const [templateType, setTemplateType] = useState('modern');
-  const [themeColor, setThemeColor] = useState('#0f766e'); 
+  const [themeColor, setThemeColor] = useState('#4f46e5'); 
   const [fontFamily, setFontFamily] = useState('theme-font-sans'); 
   const [isExporting, setIsExporting] = useState(false);
   const [isPdfLoaded, setIsPdfLoaded] = useState(false);
@@ -118,7 +88,6 @@ function App() {
     return () => { if (document.body.contains(script)) document.body.removeChild(script); };
   }, []);
 
-  // 注入打印防截断样式和全局专业中文字体
   useEffect(() => {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -136,8 +105,8 @@ function App() {
       .custom-scrollbar::-webkit-scrollbar { width: 6px; }
       .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
       .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-      @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-      .animate-slideUp { animation: slideUp 0.3s ease-out forwards; }
+      @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+      .animate-slideUp { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
     `;
@@ -145,53 +114,31 @@ function App() {
     return () => { if (document.head.contains(style)) document.head.removeChild(style); };
   }, []);
 
-  // ================= 后端 API 中转调用 =================
-  const BACKEND_URL = 'https://bool-radical-disk-stick.trycloudflare.com/api/chat';
+  // ================= 核心：后端联调引擎 =================
   const callAI = async (prompt, expectJson = false) => {
+    const BACKEND_URL = 'https://bool-radical-disk-stick.trycloudflare.com/api/chat'; 
     for (let i = 0; i < 3; i++) {
       try {
         const res = await fetch(BACKEND_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt, expectJson })
+          body: JSON.stringify({ prompt: prompt, expectJson: expectJson })
         });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.error || '后端请求失败');
-        return data.data;
+        const resultData = await res.json();
+        if (!resultData.success) throw new Error(resultData.error || '后端中转服务处理失败');
+        return resultData.data;
       } catch (err) {
-        console.error('AI Error:', err);
         if (i === 2) { 
-          alert(err.message || '大模型请求失败，请检查网络连接'); 
+          alert(err.message || '无法连接到后端服务器，请检查您的 Node.js 服务是否在运行。');
           if(expectJson) return null; 
           throw err; 
         }
-        await new Promise(r => setTimeout(r, 1500));
+        await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)));
       }
     }
   };
-  // ================= 状态更新辅助 =================
-  const updateList = (setList, id, field, value) => setList(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
-  const handleAddItem = (type) => {
-    if (type === 'work') setExperiences(prev => [...prev, { id: Date.now(), company: '', role: '', date: '', desc: '', isOptimizing: false }]);
-    if (type === 'project') setProjects(prev => [...prev, { id: Date.now(), name: '', role: '', date: '', desc: '', isOptimizing: false }]);
-    if (type === 'edu') setEducation(prev => [...prev, { id: Date.now(), school: '', major: '', degree: '', date: '' }]);
-  };
-  const handleRemoveItem = (id, type) => {
-    if (type === 'work') setExperiences(prev => prev.filter(e => e.id !== id));
-    if (type === 'project') setProjects(prev => prev.filter(p => p.id !== id));
-    if (type === 'edu') setEducation(prev => prev.filter(e => e.id !== id));
-  };
-  const handleAvatarUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setAvatar(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
-  const removeAvatar = () => setAvatar(null);
 
-  // ================= 业务逻辑：Tab 鉴权与商业化 =================
+  // ================= UI 交互与路由逻辑 (已完全修复 ReferenceError) =================
   const handleTabSwitch = (tabId) => {
     if (tabId === 'match' && !isVip) {
       setShowPaywall(true);
@@ -216,18 +163,27 @@ function App() {
     }, 800);
   };
 
-  // ================= 业务逻辑：API 配置切换 =================
-  const handleProviderChange = (providerId) => {
-    const selected = AI_PROVIDERS.find(p => p.id === providerId);
-    if (selected) {
-      setApiConfig(prev => ({
-        ...prev,
-        provider: selected.id,
-        baseUrl: selected.baseUrl,
-        modelName: selected.defaultModel
-      }));
+  // ================= 状态更新辅助 =================
+  const updateList = (setList, id, field, value) => setList(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
+  const handleAddItem = (type) => {
+    if (type === 'work') setExperiences(prev => [...prev, { id: Date.now(), company: '', role: '', date: '', desc: '', isOptimizing: false }]);
+    if (type === 'project') setProjects(prev => [...prev, { id: Date.now(), name: '', role: '', date: '', desc: '', isOptimizing: false }]);
+    if (type === 'edu') setEducation(prev => [...prev, { id: Date.now(), school: '', major: '', degree: '', date: '' }]);
+  };
+  const handleRemoveItem = (id, type) => {
+    if (type === 'work') setExperiences(prev => prev.filter(e => e.id !== id));
+    if (type === 'project') setProjects(prev => prev.filter(p => p.id !== id));
+    if (type === 'edu') setEducation(prev => prev.filter(e => e.id !== id));
+  };
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setAvatar(reader.result);
+      reader.readAsDataURL(file);
     }
   };
+  const removeAvatar = () => setAvatar(null);
 
   // ================= 业务逻辑：AI 操作 =================
   const handleJDMatch = async () => {
@@ -247,10 +203,7 @@ function App() {
     const prompt = `【岗位 JD】：${jdText}\n【经历汇总】：${allExp}\n根据JD，提取经历亮点重写自我评价。150字内，迎合JD痛点，专业自信，绝不输出废话，直接给出纯文本。`;
     try {
       const result = await callAI(prompt);
-      if(result) {
-        setSelfEval({ content: result.trim(), isOptimizing: false });
-        alert('已成功定制！'); setActiveTab('content');
-      } else throw new Error();
+      if(result) { setSelfEval({ content: result.trim(), isOptimizing: false }); setActiveTab('content'); }
     } catch (e) { setSelfEval(prev => ({ ...prev, isOptimizing: false })); }
   };
 
@@ -262,7 +215,6 @@ function App() {
     try {
       const result = await callAI(prompt);
       if(result) setSelfEval({ content: result.trim(), isOptimizing: false });
-      else throw new Error();
     } catch (err) { setSelfEval(prev => ({ ...prev, isOptimizing: false })); }
   };
 
@@ -281,12 +233,8 @@ function App() {
     
     try {
       const result = await callAI(prompt);
-      if(result) {
-        setList(prev => prev.map(item => item.id === id ? { ...item, desc: result.trim(), isOptimizing: false } : item));
-      } else throw new Error();
-    } catch (err) { 
-      setList(prev => prev.map(item => item.id === id ? { ...item, isOptimizing: false } : item));
-    }
+      if(result) { setList(prev => prev.map(item => item.id === id ? { ...item, desc: result.trim(), isOptimizing: false } : item)); }
+    } catch (err) { setList(prev => prev.map(item => item.id === id ? { ...item, isOptimizing: false } : item)); }
   };
 
   const handleExportRealPDF = async () => {
@@ -294,27 +242,20 @@ function App() {
     setIsExporting(true);
     const element = document.getElementById('resume-pdf-container');
     const opt = {
-      margin: 0,
-      filename: `${basic.name}_简历.pdf`,
-      image: { type: 'jpeg', quality: 1 },
+      margin: 0, filename: `${basic.name}_简历_OfferGo.pdf`, image: { type: 'jpeg', quality: 1 },
       html2canvas: { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
-    try { await window.html2pdf().set(opt).from(element).save(); } 
-    catch (error) { alert('导出失败'); } 
-    finally { setIsExporting(false); }
+    try { await window.html2pdf().set(opt).from(element).save(); } catch (error) { alert('导出失败'); } finally { setIsExporting(false); }
   };
 
-
-  // ================= 渲染简历模板体系 (5大版本) =================
-
-  // 1. 传统经典版
+  // ================= 渲染简历模板体系 =================
   const renderClassicTemplate = () => (
     <div className={`p-[15mm] bg-white w-full min-h-[297mm] ${fontFamily} text-gray-900`}>
       <div className="border-b-[2px] pb-[4mm] mb-[6mm] border-gray-800 page-break-inside-avoid flex justify-between items-end">
         <div className={`flex-1 ${avatar ? 'text-left' : 'text-center'}`}>
-          <h1 className="text-[36px] font-bold tracking-widest mb-3" style={{ color: themeColor }}>{basic.name}</h1>
+          <h1 className="text-[36px] font-black tracking-widest mb-3" style={{ color: themeColor }}>{basic.name}</h1>
           <div className="text-[14px] font-bold mb-2 tracking-wide">求职意向：{intention.role}</div>
           <div className={`text-[13px] text-gray-700 flex flex-wrap gap-4 ${avatar ? 'justify-start' : 'justify-center'}`}>
             <span>{basic.gender} | {basic.age}</span><span>{basic.phone}</span><span>{basic.email}</span><span>{basic.degree} | {basic.experience}</span>
@@ -323,7 +264,7 @@ function App() {
         {avatar && <div className="ml-4 flex-shrink-0"><img src={avatar} alt="Avatar" className="w-[24mm] h-[33mm] object-cover border border-gray-300 shadow-sm rounded-sm" /></div>}
       </div>
       {(() => {
-        const Title = ({text}) => (<div className="mb-[4mm] mt-[6mm] border-b border-gray-400 pb-1 flex items-center gap-2 page-break-inside-avoid"><div className="w-1.5 h-4" style={{ backgroundColor: themeColor }}></div><h2 className="text-[16px] font-bold tracking-widest uppercase" style={{ color: themeColor }}>{text}</h2></div>);
+        const Title = ({text}) => (<div className="mb-[4mm] mt-[6mm] border-b border-gray-400 pb-1 flex items-center gap-2 page-break-inside-avoid"><div className="w-1.5 h-4" style={{ backgroundColor: themeColor }}></div><h2 className="text-[16px] font-black tracking-widest uppercase" style={{ color: themeColor }}>{text}</h2></div>);
         return (
           <>
             {selfEval.content && (<div className="page-break-inside-avoid mb-[4mm]"><Title text="个人优势" /><p className="text-[13.5px] leading-[1.8] text-gray-800 text-justify whitespace-pre-line m-0">{selfEval.content}</p></div>)}
@@ -337,7 +278,6 @@ function App() {
     </div>
   );
 
-  // 2. 现代双栏版
   const renderModernTemplate = () => (
     <div className={`flex flex-row w-full bg-white min-h-[297mm] ${fontFamily}`}>
       <div className="w-[33%] bg-[#f8fafc] border-r border-gray-200 p-[8mm] flex flex-col pt-[12mm]">
@@ -347,7 +287,7 @@ function App() {
           <div className="text-[13px] font-bold text-gray-700 tracking-wider mb-2 bg-gray-200/50 inline-block px-2 py-0.5 rounded">{intention.role}</div>
         </div>
         {(() => {
-          const LeftTitle = ({title}) => (<div className={`flex items-center gap-2 mb-3 mt-5 page-break-inside-avoid`}><div className="h-[14px] w-[4px] rounded-sm" style={{ backgroundColor: themeColor }}></div><h2 className="text-[14px] font-bold tracking-widest text-gray-800">{title}</h2></div>);
+          const LeftTitle = ({title}) => (<div className={`flex items-center gap-2 mb-3 mt-5 page-break-inside-avoid`}><div className="h-[14px] w-[4px] rounded-sm" style={{ backgroundColor: themeColor }}></div><h2 className="text-[14px] font-black tracking-widest text-gray-800">{title}</h2></div>);
           return (
             <>
               <LeftTitle title="联系方式" />
@@ -362,7 +302,7 @@ function App() {
       </div>
       <div className="w-[67%] p-[10mm] pt-[12mm]">
         {(() => {
-          const RightTitle = ({title}) => (<div className={`flex items-center gap-2 mb-4 mt-6 page-break-inside-avoid`}><div className="h-[20px] w-[5px] rounded-sm" style={{ backgroundColor: themeColor }}></div><h2 className="text-[18px] font-bold tracking-widest" style={{ color: themeColor }}>{title}</h2><div className="flex-1 border-b-[1.5px] border-gray-100 mt-1 ml-2"></div></div>);
+          const RightTitle = ({title}) => (<div className={`flex items-center gap-2 mb-4 mt-6 page-break-inside-avoid`}><div className="h-[20px] w-[5px] rounded-sm" style={{ backgroundColor: themeColor }}></div><h2 className="text-[18px] font-black tracking-widest" style={{ color: themeColor }}>{title}</h2><div className="flex-1 border-b-[1.5px] border-gray-100 mt-1 ml-2"></div></div>);
           return (
             <>
               {selfEval.content && (<div className="mb-[6mm] page-break-inside-avoid"><RightTitle title="个人优势总结" /><p className="text-[13.5px] leading-[1.8] text-gray-700 text-justify whitespace-pre-line m-0">{selfEval.content}</p></div>)}
@@ -375,7 +315,6 @@ function App() {
     </div>
   );
 
-  // 3. 极简创意版
   const renderCreativeTemplate = () => (
     <div className={`w-full bg-white flex flex-col min-h-[297mm] ${fontFamily}`}>
       <div className="p-[12mm] text-white flex justify-between items-center page-break-inside-avoid relative overflow-hidden" style={{ backgroundColor: themeColor }}>
@@ -411,15 +350,14 @@ function App() {
     </div>
   );
 
-  // 4. 学术极简版
   const renderAcademicTemplate = () => (
     <div className={`p-[15mm] bg-white w-full min-h-[297mm] ${fontFamily}`}>
       <div className="border-b-[3px] border-t-[3px] py-[4mm] mb-[6mm] border-gray-900 page-break-inside-avoid flex justify-between items-center">
-        <div className="flex-1"><h1 className="text-[32px] font-bold tracking-widest mb-2 text-gray-900 text-center">{basic.name}</h1><div className="text-[13px] text-gray-800 flex justify-center gap-3 flex-wrap"><span>{intention.role}</span> | <span>{basic.phone}</span> | <span>{basic.email}</span> | <span>{basic.degree}</span></div></div>
+        <div className="flex-1"><h1 className="text-[32px] font-black tracking-widest mb-2 text-gray-900 text-center">{basic.name}</h1><div className="text-[13px] text-gray-800 flex justify-center gap-3 flex-wrap"><span>{intention.role}</span> | <span>{basic.phone}</span> | <span>{basic.email}</span> | <span>{basic.degree}</span></div></div>
         {avatar && <div className="ml-4"><img src={avatar} alt="Avatar" className="w-[22mm] h-[30mm] object-cover border border-gray-800 p-0.5" /></div>}
       </div>
       {(() => {
-        const Title = ({text}) => (<div className="mb-[3mm] mt-[6mm] border-b-[1px] border-gray-400 pb-1 page-break-inside-avoid"><h2 className="text-[15px] font-bold tracking-widest text-gray-900 uppercase" style={{ color: themeColor }}>{text}</h2></div>);
+        const Title = ({text}) => (<div className="mb-[3mm] mt-[6mm] border-b-[1px] border-gray-400 pb-1 page-break-inside-avoid"><h2 className="text-[15px] font-black tracking-widest text-gray-900 uppercase" style={{ color: themeColor }}>{text}</h2></div>);
         return (
           <>
             {selfEval.content && (<div className="page-break-inside-avoid mb-[4mm]"><Title text="个人优势 SUMMARY" /><p className="text-[13.5px] leading-[1.8] text-gray-900 text-justify whitespace-pre-line m-0">{selfEval.content}</p></div>)}
@@ -433,7 +371,6 @@ function App() {
     </div>
   );
 
-  // 5. 精英商务版
   const renderEliteTemplate = () => (
     <div className={`flex flex-row w-full bg-white min-h-[297mm] ${fontFamily}`}>
       <div className="w-[28%] text-white p-[8mm] flex flex-col pt-[12mm]" style={{ backgroundColor: themeColor }}>
@@ -443,7 +380,7 @@ function App() {
           <div className="text-[13px] font-medium tracking-wider text-white/80">{intention.role}</div>
         </div>
         {(() => {
-          const LeftTitle = ({title}) => (<h2 className="text-[14px] font-bold tracking-widest text-white border-b border-white/30 pb-1 mb-3 mt-4 page-break-inside-avoid">{title}</h2>);
+          const LeftTitle = ({title}) => (<h2 className="text-[14px] font-black tracking-widest text-white border-b border-white/30 pb-1 mb-3 mt-4 page-break-inside-avoid">{title}</h2>);
           return (
             <>
               <LeftTitle title="CONTACT" /><div className="text-[12px] space-y-3 text-white/80 font-medium page-break-inside-avoid"><div className="break-all">Email: {basic.email}</div><div>Phone: {basic.phone}</div><div>Loc: {intention.city}</div></div>
@@ -470,13 +407,13 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] flex flex-col xl:flex-row text-gray-800 font-sans relative">
+    <div className="min-h-screen bg-slate-100 flex flex-col xl:flex-row text-gray-800 font-sans relative">
       
-      {/* ================= VIP 付费解锁弹窗 (Mock) ================= */}
+      {/* ================= VIP 付费解锁弹窗 ================= */}
       {showPaywall && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl relative">
-            <button onClick={() => setShowPaywall(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">✕</button>
+            <button onClick={() => setShowPaywall(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
             <div className="text-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-orange-500/30 text-2xl">👑</div>
               <h2 className="text-2xl font-black text-gray-900">升级专业版 (Pro)</h2>
@@ -485,7 +422,6 @@ function App() {
             <ul className="space-y-3 mb-8 text-sm font-medium text-gray-700">
               <li className="flex items-center gap-2"><span className="text-green-500">✓</span> 无限次 <b>JD 智能匹配</b> 与全景深度诊断</li>
               <li className="flex items-center gap-2"><span className="text-green-500">✓</span> 解锁 <b>精英商务、极简创意</b> 等高级行业模板</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">✓</span> <b>万能大模型引擎</b> 支持所有标准协议接口</li>
               <li className="flex items-center gap-2"><span className="text-green-500">✓</span> 导出极清 PDF，支持无限制商用</li>
             </ul>
             <div className="bg-orange-50 rounded-xl p-4 mb-6 border border-orange-100 flex justify-between items-center">
@@ -500,13 +436,15 @@ function App() {
       )}
 
       {/* ================= 左侧：控制面板 ================= */}
-      <div className="w-full xl:w-[480px] bg-white shadow-[10px_0_15px_-3px_rgba(0,0,0,0.1)] z-10 flex flex-col h-screen overflow-hidden">
+      <div className="w-full xl:w-[480px] bg-white shadow-[15px_0_30px_-5px_rgba(0,0,0,0.05)] z-10 flex flex-col h-screen overflow-hidden">
         
-        <div className={`px-6 py-5 flex-shrink-0 relative overflow-hidden ${isVip ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-gradient-to-br from-teal-700 to-teal-900'}`}>
+        {/* 高级 UI Header */}
+        <div className="px-6 py-6 flex-shrink-0 relative overflow-hidden bg-gradient-to-br from-indigo-600 to-blue-800">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
           <div className="flex justify-between items-center relative z-10">
-            <h1 className="text-2xl font-black flex items-center gap-2 text-white">
-              <span className={isVip ? "text-amber-400" : "text-teal-300"}>AI</span> 简历管家
+            <h1 className="text-2xl font-black flex items-center gap-2 text-white tracking-wide">
+              <span className="bg-white text-indigo-600 px-2 py-0.5 rounded-lg shadow-sm">OfferGo</span>
+              智能简历
             </h1>
             {isVip ? (
               <span className="px-2.5 py-1 rounded bg-gradient-to-r from-amber-400 to-orange-500 text-[10px] font-black text-white shadow-sm border border-white/20">PRO 已激活</span>
@@ -514,98 +452,39 @@ function App() {
               <button onClick={() => setShowPaywall(true)} className="px-2.5 py-1 rounded bg-white/20 hover:bg-white/30 text-[10px] font-bold text-white transition border border-white/20">👑 升级专业版</button>
             )}
           </div>
-          <p className="text-white/70 text-[11px] mt-1.5 font-medium relative z-10">构建极具商业价值的简历排版工具</p>
+          <p className="text-white/80 text-[12px] mt-2 font-medium relative z-10 tracking-wide">你的 AI 求职外挂 · 免费且专业</p>
         </div>
 
-        <div className="flex border-b border-gray-200 flex-shrink-0 bg-gray-50/80 p-2 gap-2">
+        <div className="flex flex-shrink-0 bg-slate-50 p-3 gap-2 border-b border-gray-100">
           {[
-            { id: 'settings', label: '⚙️ 系统设置' },
             { id: 'content', label: '📝 内容编写' },
             { id: 'design', label: '🎨 模板样式' },
-            { id: 'match', label: '🎯 JD 匹配', vipOnly: true }
+            { id: 'match', label: '🎯 JD 匹配' }
           ].map(tab => (
             <button key={tab.id} onClick={() => handleTabSwitch(tab.id)} 
-              className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-lg text-[13px] font-bold transition-all duration-200 ${activeTab === tab.id ? 'bg-white text-gray-900 shadow-sm border border-gray-200/50 scale-[1.02]' : 'text-gray-500 hover:bg-gray-200/50'}`}>
-              {tab.label.split(' ')[0]} {tab.label.split(' ')[1]}
-              {tab.vipOnly && !isVip && <span className="text-[10px] ml-0.5 opacity-60">🔒</span>}
+              className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[13px] font-bold transition-all duration-300 ${activeTab === tab.id ? 'bg-white text-indigo-600 shadow-[0_4px_10px_rgba(0,0,0,0.05)] border border-gray-200/50 scale-[1.02]' : 'text-gray-500 hover:bg-gray-200/50'}`}>
+              {tab.label}
             </button>
           ))}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 bg-gray-50/50 custom-scrollbar relative">
+        <div className="flex-1 overflow-y-auto p-5 bg-slate-50/50 custom-scrollbar relative">
           
-          {/* ================= 0. API 万能设置面板 ================= */}
-          {activeTab === 'settings' && (
-            <div className="space-y-6 animate-slideUp">
-              <div className="bg-orange-50/50 p-4 rounded-xl border border-orange-100">
-                <h3 className="text-sm font-bold text-orange-800 mb-1 flex items-center gap-2">⚠️ 开发者选项：万能 AI 接口</h3>
-                <p className="text-xs text-orange-600 leading-relaxed">
-                  系统采用标准的 OpenAI 通讯协议。只要您有对应的 API 密钥和接口地址，可以**无缝接入包含小米、百度、阿里、智谱等所有主流大模型**。配置仅保存在本地，绝对安全。
-                </p>
-              </div>
-
-              <section className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-4"><div className="w-1 h-4 bg-teal-500 rounded-full"></div><h3 className="text-[15px] font-bold text-gray-800">大模型快速预设</h3></div>
-                
-                <div className="grid grid-cols-1 gap-3 mb-5">
-                  {AI_PROVIDERS.map(provider => (
-                    <label key={provider.id} className={`flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all ${apiConfig.provider === provider.id ? 'border-teal-500 bg-teal-50/50 shadow-sm' : 'border-gray-200 hover:bg-gray-50'}`}>
-                      <input type="radio" name="provider" value={provider.id} checked={apiConfig.provider === provider.id} onChange={() => handleProviderChange(provider.id)} className="mt-1 w-4 h-4 text-teal-600 focus:ring-teal-500" />
-                      <div className="ml-3 flex flex-col">
-                        <span className="font-bold text-[14px] text-gray-800 flex items-center gap-2">
-                          {provider.name}
-                          {provider.id === 'siliconflow' && <span className="text-[10px] font-normal px-2 py-0.5 bg-green-100 text-green-700 rounded-full">永久免费</span>}
-                        </span>
-                        <span className="text-[12px] text-gray-500 mt-1 leading-relaxed">{provider.desc}</span>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-
-                <div className="space-y-4 pt-5 border-t border-gray-100 animate-slideUp">
-                  <h4 className="text-[13px] font-bold text-gray-700 mb-2">详细接口配置区</h4>
-                  
-                  <InputGroup label="API Key (密钥) - 必填项" type="password" value={apiConfig.apiKey} onChange={e => setApiConfig({...apiConfig, apiKey: e.target.value})} placeholder="请前往对应官网获取 API Key (如 sk-...)" />
-                  
-                  <InputGroup 
-                    label="API Base URL (接口地址)" 
-                    value={apiConfig.baseUrl} 
-                    onChange={e => setApiConfig({...apiConfig, baseUrl: e.target.value})} 
-                    placeholder="例如: https://api.deepseek.com/v1"
-                    readOnly={apiConfig.provider !== 'custom'} 
-                  />
-                  
-                  <InputGroup 
-                    label="Model Name (模型调用名称)" 
-                    value={apiConfig.modelName} 
-                    onChange={e => setApiConfig({...apiConfig, modelName: e.target.value})} 
-                    placeholder="例如: deepseek-chat"
-                    readOnly={apiConfig.provider !== 'custom'} 
-                  />
-                  
-                  {apiConfig.provider !== 'custom' && (
-                     <p className="text-[11px] text-gray-400 text-right mt-1">当前使用了官方预设参数，接口地址和模型名称无需修改。</p>
-                  )}
-                </div>
-              </section>
-            </div>
-          )}
-
           {/* ================= 1. 简历内容面板 ================= */}
           {activeTab === 'content' && (
-            <div className="space-y-3 animate-slideUp">
-              <details className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 group" open>
-                <summary className="font-bold text-sm text-gray-800 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>基础信息 & 头像</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
-                <div className="mt-4 mb-4 pb-4 border-b border-gray-100 flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center overflow-hidden flex-shrink-0">
+            <div className="space-y-4 animate-slideUp">
+              <details className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 group" open>
+                <summary className="font-black text-sm text-gray-800 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>基础信息 & 头像</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
+                <div className="mt-5 mb-5 pb-5 border-b border-gray-100 flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center overflow-hidden flex-shrink-0">
                     {avatar ? <img src={avatar} className="w-full h-full object-cover" alt="avatar" /> : <span className="text-xl text-gray-300">👤</span>}
                   </div>
                   <div className="flex-1">
-                    <label className="cursor-pointer inline-block px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded hover:bg-blue-100 transition">上传照片<input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} /></label>
-                    {avatar && <button onClick={removeAvatar} className="ml-2 text-xs text-red-500 hover:underline">移除</button>}
+                    <label className="cursor-pointer inline-block px-4 py-1.5 bg-blue-50/50 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-100 transition-all border border-blue-100">上传真实证件照<input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} /></label>
+                    {avatar && <button onClick={removeAvatar} className="ml-3 text-xs text-red-500 hover:underline font-bold">移除</button>}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-x-2">
+                <div className="grid grid-cols-2 gap-x-3">
                   <InputGroup label="姓名" value={basic.name} onChange={e => setBasic({...basic, name: e.target.value})} grid />
                   <InputGroup label="意向岗位" value={intention.role} onChange={e => setIntention({...intention, role: e.target.value})} grid />
                   <InputGroup label="手机" value={basic.phone} onChange={e => setBasic({...basic, phone: e.target.value})} grid />
@@ -615,13 +494,13 @@ function App() {
                 </div>
               </details>
 
-              <details className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 group">
-                <summary className="font-bold text-sm text-gray-800 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>教育背景</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
-                <div className="mt-4 space-y-4">
+              <details className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 group">
+                <summary className="font-black text-sm text-gray-800 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>教育背景</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
+                <div className="mt-5 space-y-4">
                   {education.map((edu, idx) => (
-                    <div key={edu.id} className="relative p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                      {education.length > 1 && <button onClick={() => handleRemoveItem(edu.id, 'edu')} className="absolute top-2 right-2 text-xs text-red-400 hover:text-red-600">删除</button>}
-                      <div className="grid grid-cols-2 gap-2">
+                    <div key={edu.id} className="relative p-4 bg-slate-50 border border-gray-100 rounded-xl">
+                      {education.length > 1 && <button onClick={() => handleRemoveItem(edu.id, 'edu')} className="absolute top-3 right-3 text-xs text-red-400 hover:text-red-600 font-bold">删除</button>}
+                      <div className="grid grid-cols-2 gap-3">
                         <InputGroup label="学校" value={edu.school} onChange={e => updateList(setEducation, edu.id, 'school', e.target.value)} grid />
                         <InputGroup label="专业" value={edu.major} onChange={e => updateList(setEducation, edu.id, 'major', e.target.value)} grid />
                         <InputGroup label="学历" value={edu.degree} onChange={e => updateList(setEducation, edu.id, 'degree', e.target.value)} grid />
@@ -629,64 +508,64 @@ function App() {
                       </div>
                     </div>
                   ))}
-                  <button onClick={() => handleAddItem('edu')} className="w-full py-2 text-xs text-yellow-600 border border-yellow-200 rounded-lg hover:bg-yellow-50">+ 添加教育经历</button>
+                  <button onClick={() => handleAddItem('edu')} className="w-full py-2.5 text-xs text-amber-600 border border-amber-200 rounded-xl hover:bg-amber-50 font-bold transition-all">+ 添加教育经历</button>
                 </div>
               </details>
 
-              <details className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 group">
-                <summary className="font-bold text-sm text-gray-800 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>专业技能</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
-                <div className="mt-4"><TextAreaGroup label="硬实力展示 (可分点写)" value={skills} onChange={e => setSkills(e.target.value)} rows={4} /></div>
+              <details className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 group">
+                <summary className="font-black text-sm text-gray-800 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>专业技能</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
+                <div className="mt-5"><TextAreaGroup label="硬实力展示 (可分点写)" value={skills} onChange={e => setSkills(e.target.value)} rows={4} /></div>
               </details>
 
-              <details className="bg-white p-4 rounded-xl shadow-sm border border-gray-800 group" open>
-                <summary className="font-bold text-sm text-gray-900 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-gray-800 rounded-full"></div>工作经历 (AI 润色)</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
-                <div className="mt-4 space-y-4">
+              <details className="bg-white p-5 rounded-2xl shadow-md border border-indigo-100 group" open>
+                <summary className="font-black text-sm text-indigo-900 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>工作经历 (AI 引擎驱动)</div><span className="text-indigo-400 group-open:rotate-180 transition-transform">▼</span></summary>
+                <div className="mt-5 space-y-5">
                   {experiences.map(exp => (
-                    <div key={exp.id} className="p-3 bg-gray-50 border border-gray-200 rounded-xl relative">
-                      {experiences.length > 1 && <button onClick={() => handleRemoveItem(exp.id, 'work')} className="absolute top-2 right-2 text-xs text-red-400 hover:text-red-600">删除</button>}
-                      <div className="grid grid-cols-2 gap-2 mb-2">
+                    <div key={exp.id} className="p-4 bg-indigo-50/40 border border-indigo-100 rounded-2xl relative">
+                      {experiences.length > 1 && <button onClick={() => handleRemoveItem(exp.id, 'work')} className="absolute top-3 right-3 text-xs text-red-400 hover:text-red-600 font-bold">删除</button>}
+                      <div className="grid grid-cols-2 gap-3 mb-2">
                         <InputGroup label="公司" value={exp.company} onChange={e => updateList(setExperiences, exp.id, 'company', e.target.value)} grid />
                         <InputGroup label="岗位" value={exp.role} onChange={e => updateList(setExperiences, exp.id, 'role', e.target.value)} grid />
                       </div>
                       <InputGroup label="任职时间" value={exp.date} onChange={e => updateList(setExperiences, exp.id, 'date', e.target.value)} />
                       <TextAreaGroup label="经历描述 (输入流水账后点击下方按钮润色，可反复修改)" value={exp.desc} onChange={e => updateList(setExperiences, exp.id, 'desc', e.target.value)} rows={4} />
                       <button onClick={() => handleOptimizeBlock(exp.id, 'work')} disabled={exp.isOptimizing || !exp.desc.trim()} 
-                        className="w-full py-2 bg-gray-900 hover:bg-black text-white text-[13px] font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50">
-                        {exp.isOptimizing ? '✨ 大模型正在提炼...' : `✨ 优化这段经历`}
+                        className="w-full py-3 mt-1 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(79,70,229,0.3)] disabled:opacity-50">
+                        {exp.isOptimizing ? '✨ OfferGo 演算中...' : `✨ AI 一键提炼 STAR 亮点`}
                       </button>
                     </div>
                   ))}
-                  <button onClick={() => handleAddItem('work')} className="w-full py-2 text-xs text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100">+ 添加工作经历</button>
+                  <button onClick={() => handleAddItem('work')} className="w-full py-2.5 text-xs text-indigo-600 border border-indigo-200 rounded-xl hover:bg-indigo-50 font-bold transition-all">+ 添加工作经历</button>
                 </div>
               </details>
 
-              <details className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 group">
-                <summary className="font-bold text-sm text-gray-800 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>项目经历 (可选)</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
-                <div className="mt-4 space-y-4">
+              <details className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 group">
+                <summary className="font-black text-sm text-gray-800 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>项目经历 (可选)</div><span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span></summary>
+                <div className="mt-5 space-y-5">
                   {projects.map(proj => (
-                    <div key={proj.id} className="p-3 bg-gray-50 border border-gray-200 rounded-xl relative">
-                      <button onClick={() => handleRemoveItem(proj.id, 'project')} className="absolute top-2 right-2 text-xs text-red-400 hover:text-red-600">删除</button>
-                      <div className="grid grid-cols-2 gap-2 mb-2">
+                    <div key={proj.id} className="p-4 bg-slate-50 border border-gray-200 rounded-2xl relative">
+                      <button onClick={() => handleRemoveItem(proj.id, 'project')} className="absolute top-3 right-3 text-xs text-red-400 hover:text-red-600 font-bold">删除</button>
+                      <div className="grid grid-cols-2 gap-3 mb-2">
                         <InputGroup label="项目名" value={proj.name} onChange={e => updateList(setProjects, proj.id, 'name', e.target.value)} grid />
                         <InputGroup label="角色" value={proj.role} onChange={e => updateList(setProjects, proj.id, 'role', e.target.value)} grid />
                       </div>
                       <InputGroup label="时间" value={proj.date} onChange={e => updateList(setProjects, proj.id, 'date', e.target.value)} />
                       <TextAreaGroup label="项目描述" value={proj.desc} onChange={e => updateList(setProjects, proj.id, 'desc', e.target.value)} rows={3} />
-                      <button onClick={() => handleOptimizeBlock(proj.id, 'project')} disabled={proj.isOptimizing || !proj.desc.trim()} className="w-full py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 text-[13px] font-bold rounded-lg transition-all disabled:opacity-50">
+                      <button onClick={() => handleOptimizeBlock(proj.id, 'project')} disabled={proj.isOptimizing || !proj.desc.trim()} className="w-full py-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 text-[13px] font-black rounded-xl transition-all shadow-sm disabled:opacity-50">
                         {proj.isOptimizing ? '✨ 优化中...' : '✨ 润色项目经历'}
                       </button>
                     </div>
                   ))}
-                  <button onClick={() => handleAddItem('project')} className="w-full py-2 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50">+ 添加项目经历</button>
+                  <button onClick={() => handleAddItem('project')} className="w-full py-2.5 text-xs text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 font-bold transition-all">+ 添加项目经历</button>
                 </div>
               </details>
 
-              <details className="bg-white p-4 rounded-xl shadow-sm border border-emerald-100 group" open>
-                <summary className="font-bold text-sm text-emerald-900 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>个人总结 (全局生成)</div><span className="text-emerald-400 group-open:rotate-180 transition-transform">▼</span></summary>
-                <div className="mt-4">
-                  <textarea rows={4} value={selfEval.content} onChange={e => setSelfEval({...selfEval, content: e.target.value})} className="w-full px-3 py-2 border border-emerald-200 bg-emerald-50/30 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-100 mb-2" />
-                  <button onClick={handleGenerateSelfEval} disabled={selfEval.isOptimizing} className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[13px] font-bold rounded-lg transition-all shadow-sm disabled:opacity-50">
-                    {selfEval.isOptimizing ? '生成中...' : '💡 读取经历，一键生成终极总结'}
+              <details className="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100 group" open>
+                <summary className="font-black text-sm text-emerald-900 cursor-pointer outline-none flex justify-between items-center"><div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>自我总结 (全局生成)</div><span className="text-emerald-400 group-open:rotate-180 transition-transform">▼</span></summary>
+                <div className="mt-5">
+                  <textarea rows={4} value={selfEval.content} onChange={e => setSelfEval({...selfEval, content: e.target.value})} className="w-full px-4 py-3 border border-emerald-200 bg-emerald-50/50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-200 mb-3 text-gray-800" />
+                  <button onClick={handleGenerateSelfEval} disabled={selfEval.isOptimizing} className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-[13px] font-black rounded-xl transition-all shadow-md disabled:opacity-50">
+                    💡 读取全局经历，一键生成终极总结
                   </button>
                 </div>
               </details>
@@ -696,24 +575,24 @@ function App() {
           {/* ================= 2. 模板与样式面板 ================= */}
           {activeTab === 'design' && (
             <div className="space-y-6 animate-slideUp">
-              <section className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-4"><div className="w-1 h-4 bg-teal-500 rounded-full"></div><h3 className="text-[15px] font-bold text-gray-800">行业专属排版库 (5款)</h3></div>
+              <section className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex items-center gap-2 mb-5"><div className="w-1 h-4 bg-indigo-500 rounded-full"></div><h3 className="text-[15px] font-black text-gray-800">行业专属排版库</h3></div>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { id: 'modern', name: '现代双栏', tag: '通用基础', desc: '高信息密度，层次分明', isPremium: false },
-                    { id: 'classic', name: '经典单栏', tag: '通用基础', desc: '端庄严谨，拒绝花哨', isPremium: false },
-                    { id: 'academic', name: '学术极简', tag: '高校体制', desc: '极简素雅，经典黑白框', isPremium: false },
-                    { id: 'elite', name: '精英商务', tag: '高级会员', desc: '高级对比色侧边栏', isPremium: true },
-                    { id: 'creative', name: '极简创意', tag: '高级会员', desc: '专属时间轴视觉锚点', isPremium: true }
+                    { id: 'modern', name: '现代双栏', tag: '通用基础', desc: '高信息密度，层次分明' },
+                    { id: 'classic', name: '经典单栏', tag: '通用基础', desc: '端庄严谨，拒绝花哨' },
+                    { id: 'academic', name: '学术极简', tag: '高校体制', desc: '极简素雅，经典黑白框' },
+                    { id: 'elite', name: '精英商务', tag: '高级会员', desc: '高级对比色侧边栏' },
+                    { id: 'creative', name: '极简创意', tag: '高级会员', desc: '专属时间轴视觉锚点' }
                   ].map(tpl => (
                     <div key={tpl.id} onClick={() => handleTemplateSelect(tpl.id)}
-                      className={`cursor-pointer p-3.5 rounded-xl border-2 transition-all duration-200 relative ${templateType === tpl.id ? 'border-teal-500 bg-teal-50/40 shadow-md transform scale-[1.03]' : 'border-gray-200 bg-white hover:border-teal-200'} ${tpl.id === 'modern' ? 'col-span-2' : ''}`}>
-                      {tpl.isPremium && !isVip && (
+                      className={`cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 relative ${templateType === tpl.id ? 'border-indigo-500 bg-indigo-50/50 shadow-md transform scale-[1.02]' : 'border-gray-100 bg-white hover:border-indigo-200'} ${tpl.id === 'modern' ? 'col-span-2' : ''}`}>
+                      {tpl.id.match(/(elite|creative)/) && !isVip && (
                         <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2 text-xl">🔒</div>
                       )}
-                      <div className="flex justify-between items-center mb-1">
-                        <span className={`font-black text-[14px] ${templateType === tpl.id ? 'text-teal-700' : 'text-gray-800'}`}>{tpl.name}</span>
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${tpl.isPremium ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-gray-100 text-gray-500'}`}>{tpl.tag}</span>
+                      <div className="flex justify-between items-center mb-1.5">
+                        <span className={`font-black text-[14px] ${templateType === tpl.id ? 'text-indigo-700' : 'text-gray-800'}`}>{tpl.name}</span>
+                        <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${tpl.id.match(/(elite|creative)/) ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-gray-100 text-gray-500'}`}>{tpl.tag}</span>
                       </div>
                       <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">{tpl.desc}</p>
                     </div>
@@ -721,71 +600,71 @@ function App() {
                 </div>
               </section>
 
-              <section className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-4"><div className="w-1 h-4 bg-blue-500 rounded-full"></div><h3 className="text-[15px] font-bold text-gray-800">品牌主色调</h3></div>
+              <section className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex items-center gap-2 mb-5"><div className="w-1 h-4 bg-blue-500 rounded-full"></div><h3 className="text-[15px] font-black text-gray-800">品牌主色调</h3></div>
                 <div className="flex flex-wrap gap-3">
-                  {['#0f766e', '#2563eb', '#0369a1', '#be123c', '#b45309', '#4338ca', '#374151', '#000000'].map(color => (
+                  {['#4f46e5', '#0f766e', '#0369a1', '#be123c', '#b45309', '#374151', '#000000'].map(color => (
                     <button key={color} onClick={() => setThemeColor(color)} className={`w-10 h-10 rounded-xl border-2 shadow-sm transition-all duration-200 ${themeColor === color ? 'scale-110 border-gray-900 ring-4 ring-gray-100' : 'border-transparent hover:scale-105'}`} style={{ backgroundColor: color }} />
                   ))}
                 </div>
               </section>
 
-              <section className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-4"><div className="w-1 h-4 bg-purple-500 rounded-full"></div><h3 className="text-[15px] font-bold text-gray-800">专业中文字体引擎</h3></div>
-                <div className="grid grid-cols-1 gap-2">
-                  <button onClick={() => setFontFamily('theme-font-sans')} className={`py-3 px-4 flex justify-between items-center rounded-xl border-2 transition-all ${fontFamily === 'theme-font-sans' ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-200 bg-white hover:border-purple-200'}`}><span className="font-bold text-[14px] text-gray-800">现代黑体 (推荐)</span><span className="text-xs text-gray-500">PingFang</span></button>
-                  <button onClick={() => setFontFamily('theme-font-serif')} className={`py-3 px-4 flex justify-between items-center rounded-xl border-2 transition-all ${fontFamily === 'theme-font-serif' ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-200 bg-white hover:border-purple-200'}`}><span className="font-bold text-[14px] text-gray-800" style={{ fontFamily: "'SimSun', serif" }}>优雅宋体</span><span className="text-xs text-gray-500">SimSun</span></button>
-                  <button onClick={() => setFontFamily('theme-font-kai')} className={`py-3 px-4 flex justify-between items-center rounded-xl border-2 transition-all ${fontFamily === 'theme-font-kai' ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-200 bg-white hover:border-purple-200'}`}><span className="font-bold text-[14px] text-gray-800" style={{ fontFamily: "'KaiTi', serif" }}>稳重楷体</span><span className="text-xs text-gray-500">KaiTi</span></button>
+              <section className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex items-center gap-2 mb-5"><div className="w-1 h-4 bg-purple-500 rounded-full"></div><h3 className="text-[15px] font-black text-gray-800">专业中文字体引擎</h3></div>
+                <div className="grid grid-cols-1 gap-3">
+                  <button onClick={() => setFontFamily('theme-font-sans')} className={`py-4 px-5 flex justify-between items-center rounded-xl border-2 transition-all ${fontFamily === 'theme-font-sans' ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-100 bg-white hover:border-purple-200'}`}><span className="font-black text-[14px] text-gray-800">现代黑体 (推荐)</span><span className="text-xs text-gray-500 font-bold">PingFang</span></button>
+                  <button onClick={() => setFontFamily('theme-font-serif')} className={`py-4 px-5 flex justify-between items-center rounded-xl border-2 transition-all ${fontFamily === 'theme-font-serif' ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-100 bg-white hover:border-purple-200'}`}><span className="font-black text-[14px] text-gray-800" style={{ fontFamily: "'SimSun', serif" }}>优雅宋体</span><span className="text-xs text-gray-500 font-bold">SimSun</span></button>
+                  <button onClick={() => setFontFamily('theme-font-kai')} className={`py-4 px-5 flex justify-between items-center rounded-xl border-2 transition-all ${fontFamily === 'theme-font-kai' ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-100 bg-white hover:border-purple-200'}`}><span className="font-black text-[14px] text-gray-800" style={{ fontFamily: "'KaiTi', serif" }}>稳重楷体</span><span className="text-xs text-gray-500 font-bold">KaiTi</span></button>
                 </div>
               </section>
             </div>
           )}
 
-          {/* ================= 3. JD 匹配面板 (VIP 核心) ================= */}
+          {/* ================= 3. JD 匹配面板 ================= */}
           {activeTab === 'match' && (
             <div className="space-y-4 animate-slideUp">
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 p-5 rounded-xl shadow-sm relative overflow-hidden">
-                <div className="absolute -right-10 -top-10 text-[100px] opacity-10">🎯</div>
-                <h3 className="text-[15px] font-bold text-indigo-900 mb-3 flex items-center gap-2"><span>🎯</span> 目标岗位要求 (JD)</h3>
-                <textarea rows={5} value={jdText} onChange={e => setJdText(e.target.value)}
-                  className="w-full px-3 py-3 border border-indigo-200/50 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-y bg-white/80 relative z-10"
-                  placeholder="在此粘贴你要投递的岗位要求（JD）。\n如果粘贴了此项，你在内容板块进行【润色经历】时，AI 会自动向该岗位的痛点靠拢。" />
+              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
+                <div className="absolute -right-6 -top-6 text-[80px] opacity-10">🎯</div>
+                <h3 className="text-[16px] font-black text-indigo-900 mb-3 flex items-center gap-2 relative z-10"><span>🎯</span> 目标岗位要求 (JD)</h3>
+                <textarea rows={6} value={jdText} onChange={e => setJdText(e.target.value)}
+                  className="w-full px-4 py-3 border border-indigo-200/50 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-y bg-white/90 relative z-10 text-gray-800"
+                  placeholder="在此粘贴你要投递的岗位要求（JD）。\n如果粘贴了此项，你在内容板块进行【润色经历】时，OfferGo 会自动向该岗位的痛点靠拢。" />
                 <button onClick={handleJDMatch} disabled={isMatching}
-                  className="w-full mt-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-[15px] font-bold rounded-lg shadow-md transition-all active:scale-[0.98] disabled:opacity-70 flex justify-center items-center gap-2 relative z-10">
+                  className="w-full mt-4 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[14px] font-black rounded-xl shadow-[0_4px_15px_rgba(79,70,229,0.3)] transition-all active:scale-[0.98] disabled:opacity-70 flex justify-center items-center gap-2 relative z-10">
                   {isMatching ? '大模型火热推演中...' : '🧠 一键开启深度匹配诊断'}
                 </button>
               </div>
 
               {matchReport && (
-                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] space-y-5 animate-slideUp">
+                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] space-y-5 animate-slideUp">
                   <div className="flex items-center justify-between border-b border-gray-100 pb-5">
-                    <div className="text-gray-600 font-bold text-[15px]">岗位契合度</div>
+                    <div className="text-gray-800 font-black text-[15px]">岗位契合度</div>
                     <div className="flex items-baseline gap-1">
                       <span className={`text-5xl font-black ${matchReport.score >= 80 ? 'text-emerald-500' : matchReport.score >= 60 ? 'text-amber-500' : 'text-rose-500'}`}>{matchReport.score}</span>
-                      <span className="text-sm font-medium text-gray-400">/ 100</span>
+                      <span className="text-sm font-bold text-gray-400">/ 100</span>
                     </div>
                   </div>
                   <div>
-                    <div className="text-[13px] font-bold text-gray-800 mb-2">💡 综合诊断</div>
-                    <p className="text-[14px] text-gray-700 leading-relaxed bg-gray-50/80 p-3 rounded-lg border border-gray-100">{matchReport.analysis}</p>
+                    <div className="text-[13px] font-black text-gray-800 mb-2">💡 综合诊断</div>
+                    <p className="text-[14px] text-gray-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-gray-100">{matchReport.analysis}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-emerald-50/30 p-3 rounded-lg border border-emerald-100/50">
-                      <div className="text-[12px] font-bold text-emerald-700 mb-2 flex items-center gap-1">✅ 命中核心词</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {matchReport.matched_keywords.map(kw => <span key={kw} className="px-2.5 py-1 bg-white text-emerald-600 text-[11px] font-medium rounded shadow-sm border border-emerald-100">{kw}</span>)}
+                    <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+                      <div className="text-[12px] font-black text-emerald-700 mb-3 flex items-center gap-1">✅ 命中核心词</div>
+                      <div className="flex flex-wrap gap-2">
+                        {matchReport.matched_keywords.map(kw => <span key={kw} className="px-2.5 py-1 bg-white text-emerald-600 text-[11px] font-bold rounded-md shadow-sm border border-emerald-100">{kw}</span>)}
                       </div>
                     </div>
-                    <div className="bg-rose-50/30 p-3 rounded-lg border border-rose-100/50">
-                      <div className="text-[12px] font-bold text-rose-600 mb-2 flex items-center gap-1">❌ 缺失致命词</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {matchReport.missing_keywords.map(kw => <span key={kw} className="px-2.5 py-1 bg-white text-rose-500 text-[11px] font-medium rounded shadow-sm border border-rose-100">{kw}</span>)}
+                    <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
+                      <div className="text-[12px] font-black text-rose-600 mb-3 flex items-center gap-1">❌ 缺失致命词</div>
+                      <div className="flex flex-wrap gap-2">
+                        {matchReport.missing_keywords.map(kw => <span key={kw} className="px-2.5 py-1 bg-white text-rose-500 text-[11px] font-bold rounded-md shadow-sm border border-rose-100">{kw}</span>)}
                       </div>
                     </div>
                   </div>
-                  <div className="pt-2">
+                  <div className="pt-3">
                     <button onClick={handleRewriteEvalByJD} disabled={selfEval.isOptimizing}
-                      className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 text-white text-[14px] font-bold rounded-lg shadow-md transition-all active:scale-[0.98]">
+                      className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 text-white text-[14px] font-black rounded-xl shadow-md transition-all active:scale-[0.98]">
                       {selfEval.isOptimizing ? '提取重写中...' : '✨ 让大模型根据 JD 定制【自我评价】'}
                     </button>
                   </div>
@@ -793,32 +672,49 @@ function App() {
               )}
             </div>
           )}
+          
+          {/* 侧边栏原生广告展示位 (招租) */}
+          <div className="mt-8 mb-4">
+            <div className="block w-full p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-2xl border border-dashed border-gray-300 cursor-pointer hover:shadow-md transition-all group">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-gray-400 font-black mb-1 uppercase tracking-wider">🌟 独家赞助推荐</span>
+                  <span className="text-sm font-black text-gray-800 group-hover:text-indigo-600 transition-colors">广告位招租</span>
+                  <span className="text-[11px] font-medium text-gray-500 mt-1">海量高精准求职流量，点击联系合作</span>
+                </div>
+                <div className="w-9 h-9 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-xs font-black shadow-sm border-2 border-white group-hover:bg-indigo-500 group-hover:text-white transition-transform">
+                  Ad
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* 底部导出 */}
-        <div className="p-4 border-t border-gray-200 bg-white z-20 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
+        <div className="p-5 border-t border-gray-100 bg-white z-20 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
           <button onClick={handleExportRealPDF} disabled={isExporting}
-            className="w-full py-3 bg-gray-900 hover:bg-black text-white text-[14px] font-bold rounded-xl shadow-lg transition-all active:scale-[0.98] disabled:opacity-70 flex justify-center items-center gap-2">
-            {isExporting ? '引擎渲染中...' : '📥 导出高清 PDF 简历'}
+            className="w-full py-4 bg-gray-900 hover:bg-black text-white text-[15px] font-black rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.2)] transition-all active:scale-[0.98] disabled:opacity-70 flex justify-center items-center gap-2">
+            {isExporting ? '引擎渲染中...' : '📥 免费导出高清 PDF'}
           </button>
         </div>
       </div>
 
       {/* ================= 右侧：简历实时预览区 ================= */}
-      <div className="flex-1 overflow-y-auto bg-[#cfd8dc] p-4 md:p-8 flex justify-center items-start custom-scrollbar relative">
-        <div id="resume-pdf-container" className="w-[210mm] min-h-[297mm] shadow-[0_15px_35px_rgba(0,0,0,0.15)] transition-all duration-300">
-          {templateType === 'classic' && renderClassicTemplate()}
-          {templateType === 'modern' && renderModernTemplate()}
-          {templateType === 'creative' && renderCreativeTemplate()}
-          {templateType === 'academic' && renderAcademicTemplate()}
-          {templateType === 'elite' && renderEliteTemplate()}
+      <div className="flex-1 overflow-auto bg-slate-200/60 p-4 md:p-8 custom-scrollbar relative">
+        <div className="flex justify-start xl:justify-center min-w-max pb-10">
+          <div id="resume-pdf-container" className="w-[794px] min-w-[794px] min-h-[1123px] bg-white shadow-[0_15px_40px_rgba(0,0,0,0.1)] transition-all duration-300 shrink-0">
+            {templateType === 'classic' && renderClassicTemplate()}
+            {templateType === 'modern' && renderModernTemplate()}
+            {templateType === 'creative' && renderCreativeTemplate()}
+            {templateType === 'academic' && renderAcademicTemplate()}
+            {templateType === 'elite' && renderEliteTemplate()}
+          </div>
         </div>
       </div>
     </div>
   );
-}
-  const root = ReactDOM.createRoot(document.getElementById('root'));
-  root.render(<App />);
+}  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
